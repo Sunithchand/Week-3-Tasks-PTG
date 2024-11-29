@@ -1,0 +1,85 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <cstdlib> 
+#include <ctime>   
+
+using namespace std;
+
+class VehicleData // Class to store vehicle data
+{
+public:
+    int speed;             
+    float fuelLevel;       
+    int engineTemperature; 
+    
+    VehicleData() : speed(0), fuelLevel(100.0), engineTemperature(90) {}
+    
+    void updateData()
+    {
+        speed = rand() % 221; 
+        engineTemperature = 80 + rand() % 41; 
+        fuelLevel = static_cast<float>(rand()) / RAND_MAX * 100; 
+    }
+};
+
+class Display // Class to display vehicle data
+{
+public:
+   
+    void showData(const VehicleData& data)
+    {
+        system("clear");  
+        cout << "Vehicle Data Display\n";
+        cout << "---------------------\n";
+        cout << "Speed: " << data.speed << " km/h\n";
+        cout << "Fuel: " << data.fuelLevel << " %\n";
+        cout << "Engine Temp: " << data.engineTemperature << " °C\n";
+        displayWarnings(data);
+    }
+
+private:
+   
+    void displayWarnings(const VehicleData& data)
+    {
+        if (data.engineTemperature > 100)
+        {
+            cout << "\n*** Warning: Engine temperature is too high! ***\n";
+        }
+        if (data.fuelLevel < 10) {
+            cout << "\n*** Warning: Fuel level is critically low! ***\n";
+        }
+    }
+};
+
+void updateVehicleData(VehicleData& data)
+{
+    while (true) {
+        data.updateData();
+        this_thread::sleep_for(chrono::seconds(1)); 
+    }
+}
+
+void displayVehicleData(Display& display, VehicleData& data) 
+{
+    while (true) {
+        display.showData(data);
+        this_thread::sleep_for(chrono::seconds(1)); 
+    }
+}
+
+int main()
+{
+    srand(static_cast<unsigned>(time(0))); 
+
+    VehicleData vehicleData;
+    Display display;
+    
+    thread updateThread(updateVehicleData, ref(vehicleData));
+    thread displayThread(displayVehicleData, ref(display), ref(vehicleData));
+    
+    updateThread.join();
+    displayThread.join();
+
+    return 0;
+}
