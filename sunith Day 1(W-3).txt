@@ -1,21 +1,23 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
 using namespace std;
 
-class MenuItem {
+class MenuItem
+{
 public:
     string name;
     vector<MenuItem> children;
 
     MenuItem(string name) : name(name) {}
 
-    void addChild(MenuItem child) {
+    void addChild(MenuItem child)
+{
         children.push_back(child);
     }
 };
-class MenuNavigation {
+class MenuNavigation
+{
 private:
     vector<MenuItem>* currentMenu;
     MenuItem* parentMenu;
@@ -25,15 +27,18 @@ public:
     MenuNavigation(vector<MenuItem>& rootMenu)
         : currentMenu(&rootMenu), parentMenu(nullptr), currentSelection(0) {}
 
-    void displayMenu() {
+    void displayMenu()
+{
         cout << "\nCurrent Menu: " << endl;
-        for (int i = 0; i < currentMenu->size(); ++i) {
+        for (int i = 0; i < currentMenu->size(); ++i)
+{
             cout << (i + 1) << ". " << (*currentMenu)[i].name << endl;
         }
     }
 
     void navigateDown() {
-        if (currentMenu->size() > currentSelection && !(*currentMenu)[currentSelection].children.empty()) {
+        if (currentMenu->size() > currentSelection && !(*currentMenu)[currentSelection].children.empty())
+{
             parentMenu = &(*currentMenu)[currentSelection];
             currentMenu = &(*currentMenu)[currentSelection].children;
             currentSelection = 0;
@@ -54,7 +59,8 @@ public:
 
     void enterMenu() {
         if (currentMenu->size() > currentSelection) {
-            if ((*currentMenu)[currentSelection].children.empty()) {
+            if ((*currentMenu)[currentSelection].children.empty())
+{
                 cout << "Entering " << (*currentMenu)[currentSelection].name << "..." << endl;
             } else {
                 navigateDown();
@@ -64,8 +70,10 @@ public:
         }
     }
 
-    void handleInput(int input) {
-        switch (input) {
+    void handleInput(int input)
+{
+        switch (input)
+{
             case 1:
                 if (currentSelection < currentMenu->size() - 1)
                     currentSelection++;
@@ -85,7 +93,8 @@ public:
         }
     }
 };
-int main() {
+int main()
+{
     MenuItem mainMenu("Main Menu");
     MenuItem settings("Settings");
     MenuItem displaySettings("Display Settings");
@@ -104,20 +113,19 @@ int main() {
     vector<MenuItem> menu = { mainMenu };
 
     MenuNavigation navigation(menu);
-
     int input = 0;
-
-    while (true) {
+    while (true)
+{
         navigation.displayMenu();
         cout << "\nSelect option: (1: down, 2: up, 3: enter, 4: back, 0: exit) ";
         cin >> input;
 
-        if (input == 0) {
+        if (input == 0)
+{
             break;
         }
 
         navigation.handleInput(input);
     }
-
     return 0;
 }
